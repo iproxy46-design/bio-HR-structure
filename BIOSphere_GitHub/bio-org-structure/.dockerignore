@@ -1,0 +1,15 @@
+.git
+.next
+.vinext
+.wrangler
+.sites-runtime
+.migration
+node_modules
+dist
+coverage
+.env*
+.dev.vars*
+npm-debug.log*
+pnpm-debug.log*
+README.md
+EXCEL-BACKEND.md

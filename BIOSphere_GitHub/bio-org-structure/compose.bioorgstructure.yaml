@@ -1,0 +1,5 @@
+# Optional LAN address: http://bioorgstructure/ (requires internal DNS).
+services:
+  web:
+    ports:
+      - "80:8787"

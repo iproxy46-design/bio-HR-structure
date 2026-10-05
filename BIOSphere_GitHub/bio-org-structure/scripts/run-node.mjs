@@ -1,0 +1,16 @@
+import {existsSync} from 'node:fs';
+import {spawn} from 'node:child_process';
+import {fileURLToPath} from 'node:url';
+import {initializeDatabase} from './database-init.mjs';
+const root=fileURLToPath(new URL('../',import.meta.url));process.chdir(root);
+if(existsSync('.dev.vars'))process.loadEnvFile('.dev.vars');
+const command=process.argv[2]||'start';
+if(!['dev','build','start'].includes(command))throw Error('Expected dev, build, or start');
+if(command!=='build')await initializeDatabase();
+else await import('./build-migration.mjs');
+const args=[fileURLToPath(new URL('../node_modules/next/dist/bin/next',import.meta.url)),command];
+if(command==='build')args.push('--webpack');
+else args.push('--hostname',process.env.HOST||'127.0.0.1','--port',process.env.PORT||'8787');
+const child=spawn(process.execPath,args,{stdio:'inherit',env:process.env});
+child.on('error',()=>process.exit(1));child.on('exit',code=>process.exit(code??1));
+for(const signal of ['SIGINT','SIGTERM'])process.on(signal,()=>child.kill(signal));
